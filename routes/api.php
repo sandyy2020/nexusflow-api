@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
     return response()->json([
-        'message' => 'Nexus Api is Running',
+        'message' => 'Nexus Api is Running Now and for testing purpose only',
     ]);
 
 });
