@@ -5,7 +5,9 @@ WORKDIR /var/www
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
-    curl
+    curl \
+    nodejs \
+    npm
 
 RUN docker-php-ext-install pdo pdo_mysql
 
@@ -14,6 +16,10 @@ COPY . .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN composer install --no-dev --optimize-autoloader
+
+RUN npm install
+
+RUN npm run build
 
 EXPOSE 8000
 
