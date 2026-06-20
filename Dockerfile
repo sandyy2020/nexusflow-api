@@ -15,6 +15,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN php artisan config:cache
+EXPOSE 8000
 
 CMD php artisan serve --host=0.0.0.0 --port=$PORT
