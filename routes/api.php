@@ -17,8 +17,6 @@ use App\Models\User;
 //     ]);
 
 // });
-Route::post('/register',[AuthController::class,'register']);
-Route::post('/login',[AuthController::class,'login']);
 
 Route::get('/test-user', function () {
     $user = User::first();
@@ -26,10 +24,10 @@ Route::get('/test-user', function () {
     return new UserResource($user);
 });
 
+Route::post('/register',[AuthController::class,'register']);
+Route::post('/login',[AuthController::class,'login']);
 Route::middleware('auth:sanctum')->group(function () {
-
     Route::post('/logout', [AuthController::class, 'logout']);
-
     Route::get('/me', [AuthController::class, 'me']);
-
 });
+
