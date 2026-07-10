@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\API\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Services\Auth\AuthService;
 use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
-use Illuminate\Http\Request;
+use App\Services\Auth\AuthService;
 use Exception;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -20,6 +20,9 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
+    /**
+     * Register
+     */
     public function register(RegisterRequest $request)
     {
         try {
@@ -27,11 +30,11 @@ class AuthController extends Controller
             $result = $this->authService->register($request->validated());
 
             return ApiResponse::success(
-                'Registration successful.',
                 [
                     'user' => new UserResource($result['user']),
                     'token' => $result['token'],
                 ],
+                'Registration successful.',
                 201
             );
 
@@ -44,6 +47,10 @@ class AuthController extends Controller
             );
         }
     }
+
+    /**
+     * Login
+     */
     public function login(LoginRequest $request)
     {
         try {
@@ -51,11 +58,11 @@ class AuthController extends Controller
             $result = $this->authService->login($request->validated());
 
             return ApiResponse::success(
-                'Login successful.',
                 [
                     'user' => new UserResource($result['user']),
                     'token' => $result['token'],
-                ]
+                ],
+                'Login successful.'
             );
 
         } catch (Exception $e) {
@@ -67,21 +74,30 @@ class AuthController extends Controller
             );
         }
     }
+
+    /**
+     * Logout
+     */
     public function logout(Request $request)
     {
         $this->authService->logout($request);
 
         return ApiResponse::success(
+            null,
             'Logout successful.'
         );
     }
+
+    /**
+     * Authenticated User
+     */
     public function me(Request $request)
     {
         return ApiResponse::success(
-            'Authenticated user.',
             new UserResource(
                 $this->authService->me($request)
-            )
+            ),
+            'Authenticated user.'
         );
     }
 }
