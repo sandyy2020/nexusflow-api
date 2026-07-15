@@ -9,7 +9,20 @@ class UserService
 {
     public function index()
     {
-        return User::with('roles')
+        $query = User::with('roles');
+
+        if (request()->filled('search')) {
+
+            $query->where(function ($q) {
+
+                $q->where('name', 'like', '%'.request('search').'%')
+                    ->orWhere('email', 'like', '%'.request('search').'%');
+
+            });
+
+        }
+
+        return $query
             ->latest()
             ->paginate(request('per_page', 10));
     }

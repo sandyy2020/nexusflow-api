@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import UserList from "../pages/Users/UserList";
 
 import ProtectedRoute from "./ProtectedRoute";
 

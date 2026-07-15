@@ -84,16 +84,6 @@ export function AuthProvider({ children }) {
 
     };
 
-    const hasAnyRole = (roles = []) => {
-
-        if (!user) return false;
-
-        return roles.some(role =>
-            user.roles?.includes(role)
-        );
-
-    };
-
     return (
         <AuthContext.Provider
             value={{
