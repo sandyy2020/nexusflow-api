@@ -21,7 +21,10 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'avatar' => $this->avatar,
             'status' => $this->status,
-            'roles' => $this->getRoleNames(),
+            'roles' => $this->getRoleNames()->values(),
+            'permissions' => $this->getAllPermissions()
+                ->pluck('name')
+                ->values(),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
         ];
     }
