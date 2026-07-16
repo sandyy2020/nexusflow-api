@@ -23,8 +23,10 @@ const userService = {
         return api.delete(`/users/${id}`);
     },
 
-    changeStatus(id) {
-        return api.patch(`/users/${id}/status`);
+    changeStatus(id, status) {
+        return api.patch(`/users/${id}/status`,{
+            status,
+        });
     },
 
     assignRole(id, role) {
