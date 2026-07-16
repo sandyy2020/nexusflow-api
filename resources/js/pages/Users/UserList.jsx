@@ -70,20 +70,28 @@ export default function UserList() {
         setDeleteOpen(true);
     };
 
+    const openViewModal = (user) => {
+        setSelectedUser(user);
+        setViewOpen(true);
+    };
+
     const toggleStatus = async (user) => {
         try {
-            await userService.changeStatus(user.id, !user.status);
-            successAlert(user.status ? "User Deactivated" : "User Activated");
-            fetchUsers();
+            const newStatus = !user.status;
+
+            await userService.changeStatus(user.id, newStatus);
+
+            setUsers((prevUsers) =>
+                prevUsers.map((u) =>
+                    u.id === user.id ? { ...u, status: newStatus } : u,
+                ),
+            );
+
+            successAlert(newStatus ? "User Activated" : "User Deactivated");
         } catch (error) {
             console.log(error);
             errorAlert("Unable to change status");
         }
-    };
-
-    const openViewModal = (user) => {
-        setSelectedUser(user);
-        setViewOpen(true);
     };
 
     return (
@@ -196,23 +204,24 @@ export default function UserList() {
                                                     }
                                                 />
 
-                                                {user.status ? (
-                                                    <FaToggleOn
-                                                        className="text-green-600 text-3xl cursor-pointer hover:text-green-700 transition"
-                                                        title="Deactivate User"
-                                                        onClick={() =>
-                                                            toggleStatus(user)
-                                                        }
+                                                <button
+                                                    onClick={() =>
+                                                        toggleStatus(user)
+                                                    }
+                                                    className={`relative inline-flex h-7 w-14 items-center rounded-full transition-all duration-300 ${
+                                                        user.status
+                                                            ? "bg-green-500"
+                                                            : "bg-gray-400"
+                                                    }`}
+                                                >
+                                                    <span
+                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-all duration-300 ${
+                                                            user.status
+                                                                ? "translate-x-8"
+                                                                : "translate-x-1"
+                                                        }`}
                                                     />
-                                                ) : (
-                                                    <FaToggleOff
-                                                        className="text-gray-500 text-3xl cursor-pointer hover:text-gray-700 transition"
-                                                        title="Activate User"
-                                                        onClick={() =>
-                                                            toggleStatus(user)
-                                                        }
-                                                    />
-                                                )}
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
