@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import dashboardService from "../../services/dashboardService";
+import {
+    FaUsers,
+    FaUserCheck,
+    FaUserTimes,
+    FaUserShield,
+    FaKey,
+    FaBuilding,
+} from "react-icons/fa";
 
 export default function Dashboard() {
     const [stats, setStats] = useState({
@@ -35,28 +43,68 @@ export default function Dashboard() {
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-                    <Card title="Users" value={stats.users} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <Card
+                        title="Users"
+                        value={stats.users}
+                        icon={<FaUsers size={28} />}
+                        color="bg-blue-600"
+                    />
 
-                    <Card title="Roles" value={stats.roles} />
+                    <Card
+                        title="Active Users"
+                        value={stats.active_users}
+                        icon={<FaUserCheck size={28} />}
+                        color="bg-green-600"
+                    />
 
-                    <Card title="Permissions" value={stats.permissions} />
+                    <Card
+                        title="Inactive Users"
+                        value={stats.inactive_users}
+                        icon={<FaUserTimes size={28} />}
+                        color="bg-red-600"
+                    />
 
-                    <Card title="Active Users" value={stats.active_users} />
+                    <Card
+                        title="Roles"
+                        value={stats.roles}
+                        icon={<FaUserShield size={28} />}
+                        color="bg-purple-600"
+                    />
 
-                    <Card title="Inactive Users" value={stats.inactive_users} />
+                    <Card
+                        title="Permissions"
+                        value={stats.permissions}
+                        icon={<FaKey size={28} />}
+                        color="bg-yellow-500"
+                    />
+
+                    <Card
+                        title="Departments"
+                        value={stats.departments}
+                        icon={<FaBuilding size={28} />}
+                        color="bg-cyan-600"
+                    />
                 </div>
             )}
         </AdminLayout>
     );
 }
 
-function Card({ title, value }) {
+function Card({ title, value, icon, color }) {
     return (
-        <div className="bg-white rounded-xl shadow p-6">
-            <h3 className="text-gray-500">{title}</h3>
+        <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all">
+            <div className="flex justify-between items-center">
+                <div>
+                    <p className="text-gray-500 text-sm">{title}</p>
 
-            <p className="text-4xl font-bold mt-3">{value}</p>
+                    <h2 className="text-4xl font-bold mt-3">{value}</h2>
+                </div>
+
+                <div className={`${color} text-white p-4 rounded-full`}>
+                    {icon}
+                </div>
+            </div>
         </div>
     );
 }

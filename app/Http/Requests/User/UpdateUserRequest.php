@@ -6,31 +6,21 @@ use App\Http\Requests\ApiRequest;
 
 class UpdateUserRequest extends ApiRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     */
     public function rules(): array
     {
         $userId = $this->route('user')?->id;
 
         return [
             'name' => 'required|string|max:150',
-
-            'email' => 'required|email|max:150|unique:users,email,' . $userId,
-
-            'phone' => 'nullable|string|max:20|unique:users,phone,' . $userId,
-
+            'email' => 'required|email|max:150|unique:users,email,'.$userId,
+            'phone' => 'nullable|string|max:20|unique:users,phone,'.$userId,
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-
             'role' => 'required|exists:roles,name',
-
+            'department_id' => 'required|exists:departments,id',
             'status' => 'required|boolean',
         ];
     }
 
-    /**
-     * Custom validation messages.
-     */
     public function messages(): array
     {
         return [
@@ -48,6 +38,9 @@ class UpdateUserRequest extends ApiRequest
 
             'role.required' => 'Please select a role.',
             'role.exists' => 'Selected role is invalid.',
+
+            'department_id.required' => 'Please select a department.',
+            'department_id.exists' => 'Selected department is invalid.',
 
             'status.required' => 'Status is required.',
             'status.boolean' => 'Status must be true or false.',

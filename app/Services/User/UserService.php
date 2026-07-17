@@ -9,7 +9,10 @@ class UserService
 {
     public function index()
     {
-        $query = User::with('roles');
+        $query = User::with([
+            'roles',
+            'department',
+        ]);
 
         if (request()->filled('search')) {
 
@@ -35,6 +38,7 @@ class UserService
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? null,
+                'department_id' => $data['department_id'] ?? null,
                 'password' => $data['password'],
                 'status' => $data['status'],
             ]);
@@ -47,7 +51,10 @@ class UserService
 
     public function show(User $user): User
     {
-        return $user->load('roles');
+        return $user->load([
+            'roles',
+            'department',
+        ]);
     }
 
     public function update(User $user, array $data): User
@@ -58,6 +65,7 @@ class UserService
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? null,
+                'department_id' => $data['department_id'] ?? null,
                 'status' => $data['status'],
             ]);
 
@@ -69,7 +77,10 @@ class UserService
 
             $user->syncRoles([$data['role']]);
 
-            return $user->load('roles');
+            return $user->load([
+                'roles',
+                'department',
+            ]);
         });
     }
 

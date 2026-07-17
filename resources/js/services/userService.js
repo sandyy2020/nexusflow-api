@@ -24,7 +24,7 @@ const userService = {
     },
 
     changeStatus(id, status) {
-        return api.patch(`/users/${id}/status`,{
+        return api.patch(`/users/${id}/status`, {
             status,
         });
     },
@@ -33,6 +33,10 @@ const userService = {
         return api.post(`/users/${id}/assign-role`, {
             role,
         });
+    },
+
+    getDepartments() {
+        return api.get("/departments");
     },
 };
 

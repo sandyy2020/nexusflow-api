@@ -18,6 +18,11 @@ class Department extends Model
         'status' => 'boolean',
     ];
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function manager()
     {
         return $this->belongsTo(User::class, 'manager_id');

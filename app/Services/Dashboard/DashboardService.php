@@ -5,6 +5,7 @@ namespace App\Services\Dashboard;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\Department;
 
 class DashboardService
 {
@@ -24,6 +25,12 @@ class DashboardService
                 'roles' => Role::count(),
 
                 'permissions' => Permission::count(),
+
+                'departments' => Department::count(),
+
+                'active_departments' => Department::where('status', true)->count(),
+
+                'inactive_departments' => Department::where('status', false)->count(),
 
             ],
 

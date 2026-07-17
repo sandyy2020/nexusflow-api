@@ -143,6 +143,7 @@ export default function UserList() {
                                 <th className="p-3 text-left">Name</th>
                                 <th className="p-3 text-left">Email</th>
                                 <th className="p-3 text-left">Role</th>
+                                <th className="p-3 text-left">Department</th>
                                 <th className="p-3 text-left">Status</th>
                                 <th className="p-3 text-center">Action</th>
                             </tr>
@@ -163,6 +164,10 @@ export default function UserList() {
 
                                         <td className="p-3">
                                             {user.roles?.join(", ")}
+                                        </td>
+
+                                        <td className="p-3">
+                                            {user.department?.name || "N/A"}
                                         </td>
 
                                         <td className="p-3">
@@ -229,7 +234,7 @@ export default function UserList() {
                             ) : (
                                 <tr>
                                     <td
-                                        colSpan="6"
+                                        colSpan="7"
                                         className="text-center py-10"
                                     >
                                         No users found.

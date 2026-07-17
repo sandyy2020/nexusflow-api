@@ -3,19 +3,16 @@ import userService from "../../services/userService";
 import roleService from "../../services/roleService";
 import { successAlert, errorAlert } from "../../utils/alert";
 
-export default function EditUserModal({
-    open,
-    onClose,
-    onSuccess,
-    user,
-}) {
+export default function EditUserModal({ open, onClose, onSuccess, user }) {
     const [roles, setRoles] = useState([]);
+    const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState({
         name: "",
         email: "",
         phone: "",
+        department_id: "",
         password: "",
         password_confirmation: "",
         role: "",
@@ -25,6 +22,7 @@ export default function EditUserModal({
     useEffect(() => {
         if (open) {
             loadRoles();
+            loadDepartments();
         }
     }, [open]);
 
@@ -34,6 +32,7 @@ export default function EditUserModal({
                 name: user.name || "",
                 email: user.email || "",
                 phone: user.phone || "",
+                department_id: user.department?.id || "",
                 password: "",
                 password_confirmation: "",
                 role: user.roles?.[0] || "",
@@ -46,10 +45,22 @@ export default function EditUserModal({
         try {
             const response = await roleService.getRoles();
 
-            const rolesData =
-                response.data.data.data || response.data.data;
+            const rolesData = response.data.data.data || response.data.data;
 
             setRoles(rolesData);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const loadDepartments = async () => {
+        try {
+            const response = await userService.getDepartments();
+
+            const departmentsData =
+                response.data.data.data || response.data.data;
+
+            setDepartments(departmentsData);
         } catch (error) {
             console.log(error);
         }
@@ -60,10 +71,7 @@ export default function EditUserModal({
 
         setForm((prev) => ({
             ...prev,
-            [name]:
-                name === "status"
-                    ? value === "true"
-                    : value,
+            [name]: name === "status" ? value === "true" : value,
         }));
     };
 
@@ -85,14 +93,11 @@ export default function EditUserModal({
 
             if (error.response?.data?.errors) {
                 errorAlert(
-                    Object.values(error.response.data.errors)
-                        .flat()
-                        .join("\n")
+                    Object.values(error.response.data.errors).flat().join("\n"),
                 );
             } else {
                 errorAlert(
-                    error.response?.data?.message ||
-                        "Something went wrong."
+                    error.response?.data?.message || "Something went wrong.",
                 );
             }
         } finally {
@@ -105,15 +110,10 @@ export default function EditUserModal({
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl w-[650px] p-6">
-
-                <h2 className="text-2xl font-bold mb-5">
-                    Edit User
-                </h2>
+                <h2 className="text-2xl font-bold mb-5">Edit User</h2>
 
                 <form onSubmit={submit}>
-
                     <div className="grid grid-cols-2 gap-4">
-
                         <input
                             className="border rounded p-2"
                             name="name"
@@ -143,20 +143,34 @@ export default function EditUserModal({
 
                         <select
                             className="border rounded p-2"
+                            name="department_id"
+                            value={form.department_id}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select Department</option>
+
+                            {departments.map((department) => (
+                                <option
+                                    key={department.id}
+                                    value={department.id}
+                                >
+                                    {department.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            className="border rounded p-2"
                             name="role"
                             value={form.role}
                             onChange={handleChange}
                             required
                         >
-                            <option value="">
-                                Select Role
-                            </option>
+                            <option value="">Select Role</option>
 
                             {roles.map((role) => (
-                                <option
-                                    key={role.id}
-                                    value={role.name}
-                                >
+                                <option key={role.id} value={role.name}>
                                     {role.name}
                                 </option>
                             ))}
@@ -186,19 +200,13 @@ export default function EditUserModal({
                             value={String(form.status)}
                             onChange={handleChange}
                         >
-                            <option value="true">
-                                Active
-                            </option>
+                            <option value="true">Active</option>
 
-                            <option value="false">
-                                Inactive
-                            </option>
+                            <option value="false">Inactive</option>
                         </select>
-
                     </div>
 
                     <div className="flex justify-end gap-3 mt-6">
-
                         <button
                             type="button"
                             onClick={onClose}
@@ -212,15 +220,10 @@ export default function EditUserModal({
                             disabled={loading}
                             className="bg-blue-600 text-white px-5 py-2 rounded"
                         >
-                            {loading
-                                ? "Updating..."
-                                : "Update User"}
+                            {loading ? "Updating..." : "Update User"}
                         </button>
-
                     </div>
-
                 </form>
-
             </div>
         </div>
     );
