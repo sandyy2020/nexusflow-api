@@ -2,20 +2,24 @@
 
 namespace App\Services\Permission;
 
-
-use App\Models\Permission;
-
+// use App\Models\Permission;
+use Spatie\Permission\Models\Permission;
 
 class PermissionService
 {
-
-
-    public function getAll()
+    public function getAll($request)
     {
-        return Permission::latest()->get();
+        // return Permission::latest()->get();
+        $query = Permission::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%'.$request->search.'%');
+        }
+
+        return $query
+            ->latest()
+            ->paginate($request->per_page ?? 10);
     }
-
-
 
     public function create(array $data)
     {
@@ -29,16 +33,19 @@ class PermissionService
         ]);
 
     }
+
     public function find($id)
     {
         return Permission::findOrFail($id);
     }
+
     public function update($id, array $data)
     {
         $permission = $this->find($id);
         $permission->update([
-            'name'=>$data['name']
+            'name' => $data['name'],
         ]);
+
         return $permission;
 
     }
@@ -46,8 +53,8 @@ class PermissionService
     public function delete($id)
     {
         $permission = $this->find($id);
+
         return $permission->delete();
 
     }
-
 }

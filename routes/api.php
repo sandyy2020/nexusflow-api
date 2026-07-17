@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\PermissionController;
-use App\Http\Controllers\Api\DashboardController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -68,8 +69,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:delete roles');
 
     // Permissions
-    Route::get('/role/{role}/permissions', [RoleController::class, 'permissions'])
-        ->middleware('permission:view roles');
+    // Route::get('/role/{role}/permissions', [RoleController::class, 'permissions'])
+    //     ->middleware('permission:view roles');
 
     Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])
         ->middleware('permission:edit roles');
@@ -94,4 +95,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('permission:view dashboard');
+
+    // Department Management
+    Route::get('/departments', [DepartmentController::class, 'index'])
+        ->middleware('permission:view departments');
+
+    Route::post('/departments', [DepartmentController::class, 'store'])
+        ->middleware('permission:create departments');
+
+    Route::get('/departments/{department}', [DepartmentController::class, 'show'])
+        ->middleware('permission:view departments');
+
+    Route::put('/departments/{department}', [DepartmentController::class, 'update'])
+        ->middleware('permission:edit departments');
+
+    Route::delete('/departments/{department}', [DepartmentController::class, 'destroy'])
+        ->middleware('permission:delete departments');
+
+    Route::patch('/departments/{department}/status', [DepartmentController::class, 'changeStatus'])
+        ->middleware('permission:edit departments');
 });

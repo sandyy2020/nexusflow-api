@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
@@ -13,29 +12,41 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions=[
-             //User
-        'view users',
-        'create users',
-        'edit users',
-        'delete users',
+        $permissions = [
+            // User
+            'view users',
+            'create users',
+            'edit users',
+            'delete users',
 
-        //Role
-        'view roles',
-        'create roles',
-        'edit roles',
-        'delete roles',
+            // Role
+            'view roles',
+            'create roles',
+            'edit roles',
+            'delete roles',
 
-        //Dashboard
-        'view dashboard',
+            // Dashboard
+            'view dashboard',
+
+            // Permission
+            'view permissions',
+            'create permissions',
+            'edit permissions',
+            'delete permissions',
+
+            // Department
+            'view departments',
+            'create departments',
+            'edit departments',
+            'delete departments',
         ];
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'web'
+                'guard_name' => 'web',
             ]);
         }
-       
+
     }
 }

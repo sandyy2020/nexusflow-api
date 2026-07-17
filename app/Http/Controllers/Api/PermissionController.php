@@ -24,12 +24,12 @@ class PermissionController extends Controller
 
 
 
-    public function index()
+    public function index(Request $request)
     {
         try {
 
             $permissions = 
-                $this->permissionService->getAll();
+                $this->permissionService->getAll($request);
 
 
             return ApiResponse::success(
