@@ -4,6 +4,8 @@ namespace App\Services\User;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserService
 {
@@ -18,11 +20,9 @@ class UserService
 
             $query->where(function ($q) {
 
-                $q->where('name', 'like', '%'.request('search').'%')
-                    ->orWhere('email', 'like', '%'.request('search').'%');
-
+                $q->where('name', 'like', '%' . request('search') . '%')
+                    ->orWhere('email', 'like', '%' . request('search') . '%');
             });
-
         }
 
         return $query
@@ -33,7 +33,6 @@ class UserService
     public function store(array $data): User
     {
         return DB::transaction(function () use ($data) {
-
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -42,9 +41,11 @@ class UserService
                 'password' => $data['password'],
                 'status' => $data['status'],
             ]);
-
             $user->assignRole($data['role']);
-
+            if ($data['role'] === 'Super Admin') {
+                $role = Role::findByName('Super Admin', 'api');
+                $role->syncPermissions(Permission::all());
+            }
             return $user->load('roles');
         });
     }
@@ -76,7 +77,10 @@ class UserService
             }
 
             $user->syncRoles([$data['role']]);
-
+            if ($data['role'] === 'Super Admin') {
+                $role = Role::findByName('Super Admin', 'api');
+                $role->syncPermissions(Permission::all());
+            }
             return $user->load([
                 'roles',
                 'department',
@@ -101,7 +105,10 @@ class UserService
     public function assignRole(User $user, string $role): User
     {
         $user->syncRoles([$role]);
-
+        if ($role === 'Super Admin') {
+            $superAdminRole = Role::findByName('Super Admin', 'api');
+            $superAdminRole->syncPermissions(Permission::all());
+        }
         return $user->load('roles');
     }
 }

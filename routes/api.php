@@ -69,8 +69,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:delete roles');
 
     // Permissions
-    // Route::get('/role/{role}/permissions', [RoleController::class, 'permissions'])
-    //     ->middleware('permission:view roles');
+    Route::get('/role/permissions', [RoleController::class, 'permissions'])
+        ->middleware('permission:view roles');
 
     Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])
         ->middleware('permission:edit roles');

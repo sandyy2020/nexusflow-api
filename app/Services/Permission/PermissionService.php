@@ -13,7 +13,7 @@ class PermissionService
         $query = Permission::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%'.$request->search.'%');
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         return $query
@@ -23,15 +23,19 @@ class PermissionService
 
     public function create(array $data)
     {
-
         return Permission::create([
-
             'name' => $data['name'],
-
-            'guard_name' => 'api',
-
+            'guard_name' => 'web',
         ]);
+        $superAdminRole = Role::where('name', 'Super Admin')
+            ->where('guard_name', 'web')
+            ->first();
 
+        if ($superAdminRole) {
+            $superAdminRole->givePermissionTo($permission);
+        }
+
+        return $permission;
     }
 
     public function find($id)
@@ -47,7 +51,6 @@ class PermissionService
         ]);
 
         return $permission;
-
     }
 
     public function delete($id)
@@ -55,6 +58,5 @@ class PermissionService
         $permission = $this->find($id);
 
         return $permission->delete();
-
     }
 }

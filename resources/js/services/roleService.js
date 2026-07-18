@@ -22,7 +22,7 @@ const roleService = {
     },
 
     getPermissions() {
-        return api.get("/permissions");
+        return api.get("/role/permissions");
     },
 
     assignPermissions(id, data) {
