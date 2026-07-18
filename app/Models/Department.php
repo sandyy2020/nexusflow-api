@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Designation;
+use App\Models\Team;
 
 class Department extends Model
 {
@@ -32,5 +33,10 @@ class Department extends Model
     public function designations()
     {
         return $this->hasMany(Designation::class);
+    }
+
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
     }
 }

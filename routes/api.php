@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Api\DesignationController;
+use App\Http\Controllers\Api\TeamController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -136,4 +137,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::patch('/designations/{designation}/status', [DesignationController::class, 'changeStatus'])
         ->middleware('permission:edit designations');
+        
+    Route::middleware('permission:view teams')->group(function () {
+        Route::get('/teams', [TeamController::class, 'index']);
+        Route::get('/teams/{team}', [TeamController::class, 'show']);
+    });
+
+    Route::middleware('permission:create teams')->group(function () {
+        Route::post('/teams', [TeamController::class, 'store']);
+    });
+
+    Route::middleware('permission:edit teams')->group(function () {
+        Route::put('/teams/{team}', [TeamController::class, 'update']);
+        Route::patch('/teams/{team}/status', [TeamController::class, 'changeStatus']);
+    });
+
+    Route::middleware('permission:delete teams')->group(function () {
+        Route::delete('/teams/{team}', [TeamController::class, 'destroy']);
+    });
 });

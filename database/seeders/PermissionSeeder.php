@@ -45,6 +45,12 @@ class PermissionSeeder extends Seeder
             'create designations',
             'edit designations',
             'delete designations',
+
+            // Team
+            'view teams',
+            'create teams',
+            'edit teams',
+            'delete teams',
         ];
 
         foreach ($permissions as $permission) {

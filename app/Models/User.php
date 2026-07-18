@@ -42,4 +42,9 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
+    public function teams()
+    {
+        return $this->hasMany(Team::class, 'team_lead_id');
+    }
+
 }
