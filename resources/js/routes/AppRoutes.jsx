@@ -10,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import RoleList from "../pages/Roles/RoleList";
 import PermissionList from "../pages/Permissions/PermissionList";
 import DepartmentList from "../pages/Department/DepartmentList";
+import Designation from "../pages/Designation/Designation";
 
 function AppRoutes(){
 
@@ -25,6 +26,7 @@ function AppRoutes(){
             <Route path="/roles" element={<ProtectedRoute permission="view roles"><RoleList /></ProtectedRoute>} />
             <Route path="/permissions" element={<PermissionList />} />
             <Route path="/departments" element={<DepartmentList />} />
+            <Route path="/designations" element={<Designation />} />
         </Routes>
 
     );

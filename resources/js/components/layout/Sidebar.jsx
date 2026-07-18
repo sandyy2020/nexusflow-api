@@ -8,6 +8,7 @@ import {
     FaProjectDiagram,
     FaTasks,
     FaCog,
+    FaIdBadge
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
@@ -17,6 +18,7 @@ const menus = [
     { name: "Roles", path: "/roles", icon: <FaUserShield /> },
     { name: "Permissions", path: "/permissions", icon: <FaKey /> },
     { name: "Departments", path: "/departments", icon: <FaBuilding /> },
+    { name: "Designations", path: "/designations", icon: <FaIdBadge /> },
     { name: "Teams", path: "/teams", icon: <FaUsersCog /> },
     { name: "Projects", path: "/projects", icon: <FaProjectDiagram /> },
     { name: "Tasks", path: "/tasks", icon: <FaTasks /> },

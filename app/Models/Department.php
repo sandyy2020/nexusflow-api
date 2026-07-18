@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Designation;
 
 class Department extends Model
 {
@@ -26,5 +27,10 @@ class Department extends Model
     public function manager()
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function designations()
+    {
+        return $this->hasMany(Designation::class);
     }
 }

@@ -39,6 +39,12 @@ class PermissionSeeder extends Seeder
             'create departments',
             'edit departments',
             'delete departments',
+
+            // Designation
+            'view designations',
+            'create designations',
+            'edit designations',
+            'delete designations',
         ];
 
         foreach ($permissions as $permission) {
@@ -47,6 +53,5 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'web',
             ]);
         }
-
     }
 }

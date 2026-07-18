@@ -10,6 +10,9 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Api\DesignationController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -114,4 +117,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::patch('/departments/{department}/status', [DepartmentController::class, 'changeStatus'])
         ->middleware('permission:edit departments');
+
+    //Designation Management
+    Route::get('/designations', [DesignationController::class, 'index'])
+        ->middleware('permission:view designations');
+
+    Route::post('/designations', [DesignationController::class, 'store'])
+        ->middleware('permission:create designations');
+
+    Route::get('/designations/{designation}', [DesignationController::class, 'show'])
+        ->middleware('permission:view designations');
+
+    Route::put('/designations/{designation}', [DesignationController::class, 'update'])
+        ->middleware('permission:edit designations');
+
+    Route::delete('/designations/{designation}', [DesignationController::class, 'destroy'])
+        ->middleware('permission:delete designations');
+
+    Route::patch('/designations/{designation}/status', [DesignationController::class, 'changeStatus'])
+        ->middleware('permission:edit designations');
 });
