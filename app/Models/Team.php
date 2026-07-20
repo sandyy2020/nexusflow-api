@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Team extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'department_id',
         'team_lead_id',
@@ -27,5 +30,10 @@ class Team extends Model
     public function teamLead()
     {
         return $this->belongsTo(User::class, 'team_lead_id');
+    }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
     }
 }

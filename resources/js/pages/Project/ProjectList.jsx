@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
-import teamService from "../../services/teamService";
+import projectService from "../../services/projectService";
 
-import CreateTeamModal from "./CreateTeamModal";
-import EditTeamModal from "./EditTeamModal";
-import DeleteTeamModal from "./DeleteTeamModal";
-import ViewTeamModal from "./ViewTeamModal";
+import CreateProjectModal from "./CreateProjectModal";
+import EditProjectModal from "./EditProjectModal";
+import DeleteProjectModal from "./DeleteProjectModal";
+import ViewProjectModal from "./ViewProjectModal";
 
 import {
     FaEye,
@@ -15,8 +15,8 @@ import {
     FaToggleOff,
 } from "react-icons/fa";
 
-export default function TeamList() {
-    const [teams, setTeams] = useState([]);
+export default function ProjectList() {
+    const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const [meta, setMeta] = useState({});
@@ -31,23 +31,23 @@ export default function TeamList() {
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [viewOpen, setViewOpen] = useState(false);
 
-    const [selectedTeam, setSelectedTeam] = useState(null);
+    const [selectedProject, setSelectedProject] = useState(null);
 
     useEffect(() => {
-        fetchTeams();
+        fetchProjects();
     }, [page, perPage, search]);
 
-    const fetchTeams = async () => {
+    const fetchProjects = async () => {
         setLoading(true);
 
         try {
-            const response = await teamService.getTeams({
+            const response = await projectService.getProjects({
                 page,
                 per_page: perPage,
                 search,
             });
 
-            setTeams(response.data.data);
+            setProjects(response.data.data);
             setMeta(response.data.meta);
             setLinks(response.data.links);
         } catch (error) {
@@ -57,47 +57,48 @@ export default function TeamList() {
         }
     };
 
-    const openView = (team) => {
-        setSelectedTeam(team);
+    const openView = (project) => {
+        setSelectedProject(project);
         setViewOpen(true);
     };
 
-    const openEdit = (team) => {
-        setSelectedTeam(team);
+    const openEdit = (project) => {
+        setSelectedProject(project);
         setEditOpen(true);
     };
 
-    const openDelete = (team) => {
-        setSelectedTeam(team);
+    const openDelete = (project) => {
+        setSelectedProject(project);
         setDeleteOpen(true);
     };
 
-    const handleStatus = async (team) => {
+    const handleStatus = async (project) => {
         try {
-            await teamService.changeStatus(team.id, !team.status);
-            fetchTeams();
+            await projectService.changeStatus(project.id, !project.status);
+
+            fetchProjects();
         } catch (error) {
-            console.log(error.response?.data);
+            console.log(error);
         }
     };
 
     return (
         <AdminLayout>
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Team Management</h1>
+                <h1 className="text-3xl font-bold">Project Management</h1>
 
                 <button
                     onClick={() => setCreateOpen(true)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded"
                 >
-                    Add Team
+                    Add Project
                 </button>
             </div>
 
             <div className="flex justify-between mb-5">
                 <input
                     className="border rounded px-3 py-2 w-80"
-                    placeholder="Search Team..."
+                    placeholder="Search Project..."
                     value={search}
                     onChange={(e) => {
                         setSearch(e.target.value);
@@ -127,44 +128,38 @@ export default function TeamList() {
                         <thead className="bg-gray-100">
                             <tr>
                                 <th className="p-3 text-left">ID</th>
-
-                                <th className="p-3 text-left">Team</th>
-
+                                <th className="p-3 text-left">Project</th>
                                 <th className="p-3 text-left">Code</th>
-
                                 <th className="p-3 text-left">Department</th>
-
-                                <th className="p-3 text-left">Team Lead</th>
-
+                                <th className="p-3 text-left">Team</th>
                                 <th className="p-3 text-left">Status</th>
-
                                 <th className="p-3 text-center">Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            {teams.length > 0 ? (
-                                teams.map((team) => (
+                            {projects.length > 0 ? (
+                                projects.map((project) => (
                                     <tr
-                                        key={team.id}
+                                        key={project.id}
                                         className="border-t hover:bg-gray-50"
                                     >
-                                        <td className="p-3">{team.id}</td>
+                                        <td className="p-3">{project.id}</td>
 
-                                        <td className="p-3">{team.name}</td>
+                                        <td className="p-3">{project.name}</td>
 
-                                        <td className="p-3">{team.code}</td>
+                                        <td className="p-3">{project.code}</td>
 
                                         <td className="p-3">
-                                            {team.department?.name}
+                                            {project.department?.name}
                                         </td>
 
                                         <td className="p-3">
-                                            {team.team_lead?.name ?? "-"}
+                                            {project.team?.name}
                                         </td>
 
                                         <td className="p-3">
-                                            {team.status ? (
+                                            {project.status ? (
                                                 <span className="text-green-600 font-semibold">
                                                     Active
                                                 </span>
@@ -179,38 +174,42 @@ export default function TeamList() {
                                             <div className="flex justify-center gap-5">
                                                 <FaEye
                                                     onClick={() =>
-                                                        openView(team)
+                                                        openView(project)
                                                     }
-                                                    className="text-indigo-600 text-xl cursor-pointer hover:scale-110"
+                                                    className="text-indigo-600 text-xl cursor-pointer"
                                                 />
 
                                                 <FaEdit
                                                     onClick={() =>
-                                                        openEdit(team)
+                                                        openEdit(project)
                                                     }
-                                                    className="text-yellow-500 text-xl cursor-pointer hover:scale-110"
+                                                    className="text-yellow-500 text-xl cursor-pointer"
                                                 />
 
                                                 <FaTrash
                                                     onClick={() =>
-                                                        openDelete(team)
+                                                        openDelete(project)
                                                     }
-                                                    className="text-red-600 text-xl cursor-pointer hover:scale-110"
+                                                    className="text-red-600 text-xl cursor-pointer"
                                                 />
 
-                                                {team.status ? (
+                                                {project.status ? (
                                                     <FaToggleOn
                                                         onClick={() =>
-                                                            handleStatus(team)
+                                                            handleStatus(
+                                                                project,
+                                                            )
                                                         }
-                                                        className="text-green-600 text-xl cursor-pointer hover:scale-110"
+                                                        className="text-green-600 text-xl cursor-pointer"
                                                     />
                                                 ) : (
                                                     <FaToggleOff
                                                         onClick={() =>
-                                                            handleStatus(team)
+                                                            handleStatus(
+                                                                project,
+                                                            )
                                                         }
-                                                        className="text-gray-500 text-xl cursor-pointer hover:scale-110"
+                                                        className="text-gray-500 text-xl cursor-pointer"
                                                     />
                                                 )}
                                             </div>
@@ -223,7 +222,7 @@ export default function TeamList() {
                                         colSpan="7"
                                         className="text-center py-10"
                                     >
-                                        No Teams Found
+                                        No Projects Found
                                     </td>
                                 </tr>
                             )}
@@ -256,29 +255,29 @@ export default function TeamList() {
                 </div>
             )}
 
-            <CreateTeamModal
+            <CreateProjectModal
                 open={createOpen}
                 onClose={() => setCreateOpen(false)}
-                onSuccess={fetchTeams}
+                onSuccess={fetchProjects}
             />
 
-            <EditTeamModal
+            <EditProjectModal
                 open={editOpen}
-                team={selectedTeam}
+                project={selectedProject}
                 onClose={() => setEditOpen(false)}
-                onSuccess={fetchTeams}
+                onSuccess={fetchProjects}
             />
 
-            <DeleteTeamModal
+            <DeleteProjectModal
                 open={deleteOpen}
-                team={selectedTeam}
+                project={selectedProject}
                 onClose={() => setDeleteOpen(false)}
-                onSuccess={fetchTeams}
+                onSuccess={fetchProjects}
             />
 
-            <ViewTeamModal
+            <ViewProjectModal
                 open={viewOpen}
-                team={selectedTeam}
+                project={selectedProject}
                 onClose={() => setViewOpen(false)}
             />
         </AdminLayout>

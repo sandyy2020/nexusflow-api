@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Services\User\UserService;
 use Exception;
 use Illuminate\Http\Request;
+use App\Models\Department;
 
 class UserController extends Controller
 {
@@ -22,9 +23,6 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    /**
-     * List Users
-     */
     public function index()
     {
         try {
@@ -35,7 +33,6 @@ class UserController extends Controller
                 UserResource::collection($users),
                 'Users retrieved successfully.'
             );
-
         } catch (Exception $e) {
 
             return ApiResponse::error(
@@ -46,9 +43,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Create User
-     */
     public function store(StoreUserRequest $request)
     {
         try {
@@ -62,7 +56,6 @@ class UserController extends Controller
                 'User created successfully.',
                 201
             );
-
         } catch (Exception $e) {
 
             return ApiResponse::error(
@@ -73,9 +66,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * View User
-     */
     public function show(User $user)
     {
         try {
@@ -86,7 +76,6 @@ class UserController extends Controller
                 new UserResource($user),
                 'User fetched successfully.'
             );
-
         } catch (Exception $e) {
 
             return ApiResponse::error(
@@ -97,9 +86,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Update User
-     */
     public function update(UpdateUserRequest $request, User $user)
     {
         try {
@@ -113,7 +99,6 @@ class UserController extends Controller
                 new UserResource($user),
                 'User updated successfully.'
             );
-
         } catch (Exception $e) {
 
             return ApiResponse::error(
@@ -124,9 +109,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Delete User
-     */
     public function destroy(User $user)
     {
         try {
@@ -137,7 +119,6 @@ class UserController extends Controller
                 null,
                 'User deleted successfully.'
             );
-
         } catch (Exception $e) {
 
             return ApiResponse::error(
@@ -148,9 +129,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Change User Status
-     */
     public function changeStatus(UpdateStatusRequest $request, User $user)
     {
         try {
@@ -164,7 +142,6 @@ class UserController extends Controller
                 new UserResource($user),
                 'User status updated successfully.'
             );
-
         } catch (Exception $e) {
 
             return ApiResponse::error(
@@ -175,9 +152,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Assign Role
-     */
     public function assignRole(Request $request, User $user)
     {
         $request->validate([
@@ -195,7 +169,6 @@ class UserController extends Controller
                 new UserResource($user),
                 'Role assigned successfully.'
             );
-
         } catch (Exception $e) {
 
             return ApiResponse::error(
@@ -204,5 +177,34 @@ class UserController extends Controller
                 500
             );
         }
+    }
+
+    public function usersByDepartment($departmentId)
+    {
+        $users = User::where('department_id', $departmentId)
+            ->where('status', true)
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return ApiResponse::success(
+            $users,
+            'Department users fetched successfully.'
+        );
+    }
+
+    public function usersByTeam($teamId)
+    {
+        $users = User::where('team_id', $teamId)
+            ->where('status', true)
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+
+        return ApiResponse::success(
+            $users,
+            'Team users fetched successfully.'
+        );
     }
 }

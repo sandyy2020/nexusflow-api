@@ -76,16 +76,32 @@ class TeamController extends Controller
         );
     }
 
-    public function changeStatus(ChangeStatusRequest $request, Team $team)
+    public function changeStatus(Request $request, Team $team)
     {
+        $request->validate([
+            'status' => 'required|boolean',
+        ]);
         $team = $this->teamService->changeStatus(
             $team,
             $request->status
         );
-
         return ApiResponse::success(
             new TeamResource($team),
             'Team status updated successfully.'
+        );
+    }
+
+    public function teamsByDepartment($departmentId)
+    {
+        $teams = Team::where('department_id', $departmentId)
+            ->where('status', true)
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return ApiResponse::success(
+            $teams,
+            'Teams fetched successfully.'
         );
     }
 }

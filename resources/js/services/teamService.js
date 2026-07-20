@@ -28,6 +28,10 @@ const teamService = {
             status,
         });
     },
+
+    getTeamsByDepartment(departmentId) {
+        return api.get(`/departments/${departmentId}/teams`);
+    },
 };
 
 export default teamService;

@@ -14,6 +14,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\TeamController;
+use App\Http\Controllers\Api\ProjectController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -137,7 +138,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::patch('/designations/{designation}/status', [DesignationController::class, 'changeStatus'])
         ->middleware('permission:edit designations');
-        
+
     Route::middleware('permission:view teams')->group(function () {
         Route::get('/teams', [TeamController::class, 'index']);
         Route::get('/teams/{team}', [TeamController::class, 'show']);
@@ -155,4 +156,38 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware('permission:delete teams')->group(function () {
         Route::delete('/teams/{team}', [TeamController::class, 'destroy']);
     });
+
+    Route::get('/teams/department/{department}/users', [UserController::class, 'usersByDepartment'])
+        ->middleware('permission:view teams');
+
+    // Project Management
+    Route::middleware('permission:view projects')->group(function () {
+
+        Route::get('/projects', [ProjectController::class, 'index']);
+
+        Route::get('/projects/{project}', [ProjectController::class, 'show']);
+    });
+
+    Route::middleware('permission:create projects')->group(function () {
+
+        Route::post('/projects', [ProjectController::class, 'store']);
+    });
+
+    Route::middleware('permission:edit projects')->group(function () {
+
+        Route::put('/projects/{project}', [ProjectController::class, 'update']);
+
+        Route::patch('/projects/{project}/status', [ProjectController::class, 'changeStatus']);
+    });
+
+    Route::middleware('permission:delete projects')->group(function () {
+
+        Route::delete('/projects/{project}', [ProjectController::class, 'destroy']);
+    });
+
+    Route::get('/departments/{department}/teams', [TeamController::class, 'teamsByDepartment'])
+        ->middleware('permission:view projects');
+
+    Route::get('/teams/{team}/users', [UserController::class, 'usersByTeam'])
+        ->middleware('permission:view projects');
 });

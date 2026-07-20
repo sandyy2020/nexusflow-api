@@ -39,4 +39,9 @@ class Department extends Model
     {
         return $this->hasMany(Team::class);
     }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
 }

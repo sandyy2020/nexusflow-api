@@ -22,7 +22,7 @@ export default function CreateTeamModal({ open, onClose, onSuccess }) {
     useEffect(() => {
         if (open) {
             loadDepartments();
-            loadUsers();
+            setUsers([]);
         }
     }, [open]);
 
@@ -38,19 +38,7 @@ export default function CreateTeamModal({ open, onClose, onSuccess }) {
         }
     };
 
-    const loadUsers = async () => {
-        try {
-            const response = await userService.getUsers({
-                per_page: 100,
-            });
-
-            setUsers(response.data.data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const handleChange = (e) => {
+    const handleChange = async (e) => {
         const { name, value, type, checked } = e.target;
 
         setFormData((prev) => ({
@@ -62,6 +50,27 @@ export default function CreateTeamModal({ open, onClose, onSuccess }) {
             ...prev,
             [name]: "",
         }));
+
+        if (name === "department_id") {
+            setFormData((prev) => ({
+                ...prev,
+                department_id: value,
+                team_lead_id: "",
+            }));
+
+            if (value) {
+                try {
+                    const response =
+                        await userService.getUsersByDepartment(value);
+
+                    setUsers(response.data.data);
+                } catch (error) {
+                    console.log(error);
+                }
+            } else {
+                setUsers([]);
+            }
+        }
     };
 
     const handleSubmit = async (e) => {

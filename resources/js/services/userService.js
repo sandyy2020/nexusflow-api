@@ -38,6 +38,14 @@ const userService = {
     getDepartments() {
         return api.get("/departments");
     },
+
+    getUsersByDepartment(departmentId) {
+        return api.get(`/teams/department/${departmentId}/users`);
+    },
+
+     getUsersByTeam(teamId) {
+        return api.get(`/teams/${teamId}/users`);
+    },
 };
 
 export default userService;

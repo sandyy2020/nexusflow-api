@@ -4,6 +4,8 @@ namespace App\Http\Resources\Team;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\UserResource;
 
 class TeamResource extends JsonResource
 {
@@ -12,9 +14,9 @@ class TeamResource extends JsonResource
         return [
             'id' => $this->id,
             'department_id' => $this->department_id,
-            'department' => $this->department,
+           'department' => new DepartmentResource($this->whenLoaded('department')),
             'team_lead_id' => $this->team_lead_id,
-            'team_lead' => $this->teamLead,
+            'team_lead' => new UserResource($this->whenLoaded('teamLead')),
             'name' => $this->name,
             'code' => $this->code,
             'description' => $this->description,
