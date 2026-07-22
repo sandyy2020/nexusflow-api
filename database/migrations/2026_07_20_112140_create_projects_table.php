@@ -13,9 +13,6 @@ return new class extends Migration
             $table->foreignId('department_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->foreignId('team_id')
-                ->constrained()
-                ->cascadeOnDelete();
             $table->foreignId('project_manager_id')
                 ->nullable()
                 ->constrained('users')
@@ -30,7 +27,7 @@ return new class extends Migration
                 'Medium',
                 'High',
                 'Critical'
-            ])->default('Medium');
+            ])->default('Low');
             $table->enum('project_status', [
                 'Planning',
                 'Active',
@@ -38,7 +35,7 @@ return new class extends Migration
                 'Completed',
                 'Cancelled'
             ])->default('Planning');
-            $table->integer('progress')->default(0);
+           $table->unsignedTinyInteger('progress')->default(0);
             $table->decimal('budget', 12, 2)->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(true);

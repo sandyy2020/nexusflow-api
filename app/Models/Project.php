@@ -11,7 +11,6 @@ class Project extends Model
 
     protected $fillable = [
         'department_id',
-        'team_id',
         'project_manager_id',
         'name',
         'code',
@@ -23,7 +22,7 @@ class Project extends Model
         'progress',
         'budget',
         'description',
-        'is_active',
+        'status',
     ];
 
     protected $casts = [
@@ -39,13 +38,23 @@ class Project extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function team()
+    public function teams()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(Team::class, 'project_team', 'project_id', 'team_id');
     }
 
     public function projectManager()
     {
         return $this->belongsTo(User::class, 'project_manager_id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function taskStatuses()
+    {
+        return $this->hasMany(TaskStatus::class);
     }
 }

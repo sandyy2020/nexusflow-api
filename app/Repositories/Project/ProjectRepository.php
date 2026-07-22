@@ -8,44 +8,87 @@ class ProjectRepository
 {
     public function getAll($request)
     {
-        return Project::with(['department', 'team', 'manager'])
-            ->when($request->search, function ($query) use ($request) {
-                $query->where('name', 'like', "%{$request->search}%")
-                    ->orWhere('code', 'like', "%{$request->search}%");
-            })
-            ->latest()
-            ->paginate($request->per_page ?? 10);
+        $query = Project::with([
+            'department',
+            'teams',
+            'projectManager',
+        ]);
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                    ->orWhere('code', 'like', "%{$request->search}%")
+                    ->orWhere('client_name', 'like', "%{$request->search}%");
+            });
+        }
+
+        return $query->latest()->paginate(
+            $request->get('per_page', 10)
+        );
     }
 
-    public function findById($id)
+    public function findById(int $id): Project
     {
-        return Project::with(['department', 'team', 'manager'])
-            ->findOrFail($id);
+        return Project::with([
+            'department',
+            'teams',
+            'projectManager',
+        ])->findOrFail($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): Project
     {
-        return Project::create($data);
+        $teamIds = $data['team_ids'] ?? [];
+
+        unset($data['team_ids']);
+
+        $project = Project::create($data);
+
+        if (!empty($teamIds)) {
+            $project->teams()->sync($teamIds);
+        }
+
+        return $project->load([
+            'department',
+            'teams',
+            'projectManager',
+        ]);
     }
 
-    public function update(Project $project, array $data)
+    public function update(Project $project, array $data): Project
     {
+        $teamIds = $data['team_ids'] ?? [];
+
+        unset($data['team_ids']);
+
         $project->update($data);
 
-        return $project->fresh(['department', 'team', 'manager']);
+        $project->teams()->sync($teamIds);
+
+        return $project->load([
+            'department',
+            'teams',
+            'projectManager',
+        ]);
     }
 
-    public function delete(Project $project)
+    public function delete(Project $project): void
     {
-        return $project->delete();
+        $project->teams()->detach();
+
+        $project->delete();
     }
 
-    public function changeStatus(Project $project, bool $status)
+    public function changeStatus(Project $project, bool $status): Project
     {
         $project->update([
             'status' => $status,
         ]);
 
-        return $project;
+        return $project->fresh([
+            'department',
+            'teams',
+            'projectManager',
+        ]);
     }
 }

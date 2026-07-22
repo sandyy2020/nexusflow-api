@@ -4,6 +4,7 @@ namespace App\Services\Project;
 
 use App\Models\Project;
 use App\Repositories\Project\ProjectRepository;
+use Illuminate\Support\Facades\DB;
 
 class ProjectService
 {
@@ -19,27 +20,33 @@ class ProjectService
         return $this->repository->getAll($request);
     }
 
-    public function findById($id)
+    public function findById(int $id): Project
     {
         return $this->repository->findById($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): Project
     {
-        return $this->repository->create($data);
+        return DB::transaction(function () use ($data) {
+            return $this->repository->create($data);
+        });
     }
 
-    public function update(Project $project, array $data)
+    public function update(Project $project, array $data): Project
     {
-        return $this->repository->update($project, $data);
+        return DB::transaction(function () use ($project, $data) {
+            return $this->repository->update($project, $data);
+        });
     }
 
-    public function delete(Project $project)
+    public function delete(Project $project): void
     {
-        return $this->repository->delete($project);
+        DB::transaction(function () use ($project) {
+            $this->repository->delete($project);
+        });
     }
 
-    public function changeStatus(Project $project, bool $status)
+    public function changeStatus(Project $project, bool $status): Project
     {
         return $this->repository->changeStatus($project, $status);
     }

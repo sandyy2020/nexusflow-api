@@ -15,6 +15,8 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\Api\TaskAttachmentController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -190,4 +192,80 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/teams/{team}/users', [UserController::class, 'usersByTeam'])
         ->middleware('permission:view projects');
+
+    Route::apiResource('tasks', TaskController::class);
+
+Route::patch(
+    'tasks/{task}/status',
+    [TaskController::class, 'changeStatus']
+);
+
+Route::patch(
+    'tasks/{id}/restore',
+    [TaskController::class, 'restore']
+);
+
+Route::delete(
+    'tasks/{id}/force-delete',
+    [TaskController::class, 'forceDelete']
+);
+
+Route::post(
+    'tasks/{task}/assign-users',
+    [TaskController::class, 'assignUsers']
+);
+
+Route::delete(
+    'tasks/{task}/assigned-users/{userId}',
+    [TaskController::class, 'removeAssignedUser']
+);
+
+Route::put(
+    'tasks/{task}/sync-assignments',
+    [TaskController::class, 'syncAssignments']
+);
+
+Route::patch(
+    'tasks/{task}/workflow-status',
+    [TaskController::class, 'changeTaskStatus']
+);
+
+Route::patch(
+    'tasks/{task}/priority',
+    [TaskController::class, 'changeTaskPriority']
+);
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::prefix('task-attachments')
+        ->controller(TaskAttachmentController::class)
+        ->group(function () {
+
+            Route::get('/', 'index')
+                ->middleware('permission:view task attachments');
+
+            Route::post('/', 'store')
+                ->middleware('permission:create task attachments');
+
+            Route::get('/{taskAttachment}', 'show')
+                ->middleware('permission:view task attachments');
+
+            Route::put('/{taskAttachment}', 'update')
+                ->middleware('permission:edit task attachments');
+
+            Route::delete('/{taskAttachment}', 'destroy')
+                ->middleware('permission:delete task attachments');
+
+            Route::patch('/{taskAttachment}/status', 'changeStatus')
+                ->middleware('permission:edit task attachments');
+
+            Route::patch('/restore/{id}', 'restore')
+                ->middleware('permission:restore task attachments');
+
+            Route::delete('/force-delete/{id}', 'forceDelete')
+                ->middleware('permission:force delete task attachments');
+
+        });
+
+});
 });

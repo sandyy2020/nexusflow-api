@@ -28,25 +28,6 @@ const projectService = {
             status,
         });
     },
-
-    // Load all departments
-    getDepartments() {
-        return api.get("/departments", {
-            params: {
-                per_page: 100,
-            },
-        });
-    },
-
-    // Load teams by department
-    getTeamsByDepartment(departmentId) {
-        return api.get(`/departments/${departmentId}/teams`);
-    },
-
-    // Load users by team (Project Managers)
-    getUsersByTeam(teamId) {
-        return api.get(`/teams/${teamId}/users`);
-    },
 };
 
 export default projectService;

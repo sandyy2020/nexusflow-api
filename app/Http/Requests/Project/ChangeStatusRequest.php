@@ -15,7 +15,7 @@ class ChangeStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'is_active' => 'required|boolean',
+            'status' => 'required|boolean',
         ];
     }
 }

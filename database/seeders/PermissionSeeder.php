@@ -57,6 +57,14 @@ class PermissionSeeder extends Seeder
             'create projects',
             'edit projects',
             'delete projects',
+
+            //Task Attachments
+            'view task attachments',
+            'create task attachments',
+            'edit task attachments',
+            'delete task attachments',
+            'restore task attachments',
+            'force delete task attachments',
         ];
 
         foreach ($permissions as $permission) {

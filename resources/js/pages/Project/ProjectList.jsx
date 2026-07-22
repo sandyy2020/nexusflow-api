@@ -131,7 +131,14 @@ export default function ProjectList() {
                                 <th className="p-3 text-left">Project</th>
                                 <th className="p-3 text-left">Code</th>
                                 <th className="p-3 text-left">Department</th>
-                                <th className="p-3 text-left">Team</th>
+                                <th className="p-3 text-left">Teams</th>
+                                <th className="p-3 text-left">
+                                    Project Manager
+                                </th>
+                                <th className="p-3 text-left">Priority</th>
+                                <th className="p-3 text-left">
+                                    Project Status
+                                </th>
                                 <th className="p-3 text-left">Status</th>
                                 <th className="p-3 text-center">Actions</th>
                             </tr>
@@ -155,7 +162,42 @@ export default function ProjectList() {
                                         </td>
 
                                         <td className="p-3">
-                                            {project.team?.name}
+                                            {project.teams?.length > 0
+                                                ? project.teams
+                                                      .map((team) => team.name)
+                                                      .join(", ")
+                                                : "-"}
+                                        </td>
+
+                                        <td className="p-3">
+                                            {project.project_manager?.name ??
+                                                "-"}
+                                        </td>
+
+                                        <td className="p-3">
+                                            {project.priority}
+                                        </td>
+
+                                        <td className="p-3">
+                                            <span
+                                                className={`px-2 py-1 rounded text-xs font-semibold ${
+                                                    project.project_status ===
+                                                    "Completed"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : project.project_status ===
+                                                            "Active"
+                                                          ? "bg-blue-100 text-blue-700"
+                                                          : project.project_status ===
+                                                              "Planning"
+                                                            ? "bg-yellow-100 text-yellow-700"
+                                                            : project.project_status ===
+                                                                "On Hold"
+                                                              ? "bg-orange-100 text-orange-700"
+                                                              : "bg-red-100 text-red-700"
+                                                }`}
+                                            >
+                                                {project.project_status}
+                                            </span>
                                         </td>
 
                                         <td className="p-3">
@@ -219,7 +261,7 @@ export default function ProjectList() {
                             ) : (
                                 <tr>
                                     <td
-                                        colSpan="7"
+                                        colSpan="10"
                                         className="text-center py-10"
                                     >
                                         No Projects Found
