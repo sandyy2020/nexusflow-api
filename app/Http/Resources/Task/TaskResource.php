@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Task;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\UserResource;
 
 class TaskResource extends JsonResource
 {
@@ -14,35 +15,35 @@ class TaskResource extends JsonResource
             'task_code' => $this->task_code,
             'title' => $this->title,
             'description' => $this->description,
-            'project' => $this->whenLoaded('project', function () {
-                return [
+            'project' => $this->project
+                ? [
                     'id' => $this->project->id,
                     'name' => $this->project->name,
-                ];
-            }),
-            'parent_task' => $this->whenLoaded('parent', function () {
-                return [
+                ]
+                : null,
+            'parent_task' => $this->parent
+                ? [
                     'id' => $this->parent->id,
                     'task_code' => $this->parent->task_code,
                     'title' => $this->parent->title,
-                ];
-            }),
-            'task_status' => $this->whenLoaded('status', function () {
-                return [
-                    'id' => $this->status->id,
-                    'name' => $this->status->name,
-                    'color' => $this->status->color,
-                    'is_completed' => $this->status->is_completed,
-                ];
-            }),
-            'task_priority' => $this->whenLoaded('priority', function () {
-                return [
-                    'id' => $this->priority->id,
-                    'name' => $this->priority->name,
-                    'level' => $this->priority->level,
-                    'color' => $this->priority->color,
-                ];
-            }),
+                ]
+                : null,
+            'task_status' => $this->taskStatus
+                ? [
+                    'id' => $this->taskStatus->id,
+                    'name' => $this->taskStatus->name,
+                    'color' => $this->taskStatus->color,
+                    'is_completed' => $this->taskStatus->is_completed,
+                ]
+                : null,
+            'task_priority' => $this->taskPriority
+                ? [
+                    'id' => $this->taskPriority->id,
+                    'name' => $this->taskPriority->name,
+                    'level' => $this->taskPriority->level,
+                    'color' => $this->taskPriority->color,
+                ]
+                : null,
             'progress' => $this->progress,
             'story_points' => $this->story_points,
             'estimated_hours' => $this->estimated_hours,
@@ -52,20 +53,22 @@ class TaskResource extends JsonResource
             'completed_at' => optional($this->completed_at)->format('Y-m-d H:i:s'),
             'is_billable' => $this->is_billable,
             'metadata' => $this->metadata,
-            'created_by' => $this->whenLoaded('creator', function () {
-                return [
+            'created_by' => $this->creator
+                ? [
                     'id' => $this->creator->id,
                     'name' => $this->creator->name,
                     'email' => $this->creator->email,
-                ];
-            }),
-            'updated_by' => $this->whenLoaded('updater', function () {
-                return [
+                ]
+                : null,
+            'updated_by' => $this->updater
+                ? [
                     'id' => $this->updater->id,
                     'name' => $this->updater->name,
-                ];
-            }),
-            'assigned_users' => $this->whenLoaded('assignedUsers'),
+                ]
+                : null,
+            'assigned_users' => UserResource::collection(
+                $this->whenLoaded('assignedUsers')
+            ),
             'attachments_count' => $this->whenCounted('attachments'),
             'comments_count' => $this->whenCounted('comments'),
             'checklists_count' => $this->whenCounted('checklists'),
@@ -76,6 +79,9 @@ class TaskResource extends JsonResource
                 ->format('Y-m-d H:i:s'),
             'updated_at' => optional($this->updated_at)
                 ->format('Y-m-d H:i:s'),
+            'children' => TaskResource::collection(
+                $this->whenLoaded('children')
+            ),
         ];
     }
 }

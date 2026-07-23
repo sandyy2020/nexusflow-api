@@ -49,12 +49,12 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function status()
+    public function taskStatus()
     {
         return $this->belongsTo(TaskStatus::class, 'task_status_id');
     }
 
-    public function priority()
+    public function taskPriority()
     {
         return $this->belongsTo(TaskPriority::class, 'task_priority_id');
     }
@@ -69,17 +69,17 @@ class Task extends Model
         return $this->hasMany(Task::class, 'parent_task_id');
     }
 
-    public function createdTasks()
-    {
-        return $this->hasMany(Task::class, 'created_by');
-    }
+    // public function createdTasks()
+    // {
+    //     return $this->hasMany(Task::class, 'created_by');
+    // }
 
-    public function updatedTasks()
-    {
-        return $this->hasMany(Task::class, 'updated_by');
-    }
+    // public function updatedTasks()
+    // {
+    //     return $this->hasMany(Task::class, 'updated_by');
+    // }
 
-    public function taskAssignments()
+    public function assignments()
     {
         return $this->hasMany(TaskAssignment::class);
     }
@@ -122,32 +122,9 @@ class Task extends Model
         return $this->hasMany(TaskActivity::class)->latest();
     }
 
-    public function assignedTasks()
-    {
-        return $this->belongsToMany(
-            Task::class,
-            'task_assignments'
-        )->withPivot([
-            'role',
-            'assigned_by',
-            'assigned_at',
-            'status',
-        ])->withTimestamps();
-    }
-
     public function uploadedTaskAttachments()
     {
         return $this->hasMany(TaskAttachment::class, 'uploaded_by');
-    }
-
-    public function taskComments()
-    {
-        return $this->hasMany(TaskComment::class);
-    }
-
-    public function taskTimeLogs()
-    {
-        return $this->hasMany(TaskTimeLog::class);
     }
 
     public function assignedChecklistItems()
@@ -160,8 +137,13 @@ class Task extends Model
         return $this->hasMany(TaskChecklist::class, 'completed_by');
     }
 
-    public function taskActivities()
+    public function creator()
     {
-        return $this->hasMany(TaskActivity::class);
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

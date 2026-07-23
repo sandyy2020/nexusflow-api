@@ -13,6 +13,7 @@ import DepartmentList from "../pages/Department/DepartmentList";
 import Designation from "../pages/Designation/Designation";
 import TeamList from "../pages/team/TeamList";
 import ProjectList from "../pages/project/ProjectList";
+import TaskList from "../pages/Task/TaskList";
 
 function AppRoutes() {
     return (
@@ -53,6 +54,14 @@ function AppRoutes() {
                 element={
                     <ProtectedRoute>
                         <ProjectList />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/tasks"
+                element={
+                    <ProtectedRoute>
+                        <TaskList />
                     </ProtectedRoute>
                 }
             />

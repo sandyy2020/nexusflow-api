@@ -5,12 +5,16 @@ namespace App\Http\Resources\Task;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class TaskCollection extends ResourceCollection
+class TaskAssignmentCollection extends ResourceCollection
 {
     public function toArray(Request $request): array
     {
         return [
-            'data' => TaskResource::collection($this->collection),
+
+            'data' => TaskAssignmentResource::collection(
+                $this->collection
+            ),
+
         ];
     }
 }

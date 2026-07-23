@@ -6,8 +6,8 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Task\StoreTaskRequest;
 use App\Http\Requests\Task\UpdateTaskRequest;
-use App\Http\Resources\TaskCollection;
-use App\Http\Resources\TaskResource;
+use App\Http\Resources\Task\TaskCollection;
+use App\Http\Resources\Task\TaskResource;
 use App\Models\Task;
 use App\Services\Task\TaskService;
 use Illuminate\Http\Request;
@@ -39,13 +39,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-
                 'Failed to retrieve tasks.',
-
-                500,
-
-                $e->getMessage()
-
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -72,13 +68,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-
-                'Task creation failed.',
-
-                500,
-
-                $e->getMessage()
-
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -98,9 +90,9 @@ class TaskController extends Controller
             );
         } catch (Throwable $e) {
             return ApiResponse::error(
-                'Failed to retrieve task.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -124,9 +116,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Task update failed.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -145,11 +137,10 @@ class TaskController extends Controller
                 'Task deleted successfully.'
             );
         } catch (Throwable $e) {
-
             return ApiResponse::error(
-                'Task deletion failed.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -170,9 +161,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Failed to update task status.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -193,9 +184,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Failed to restore task.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -216,9 +207,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Failed to permanently delete task.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -247,9 +238,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Failed to assign users.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -273,9 +264,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Failed to remove assigned user.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -304,9 +295,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Failed to synchronize task assignments.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -337,9 +328,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Failed to update task status.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }
@@ -370,9 +361,9 @@ class TaskController extends Controller
         } catch (Throwable $e) {
 
             return ApiResponse::error(
-                'Failed to update task priority.',
-                500,
-                $e->getMessage()
+                'Failed to retrieve tasks.',
+                $e->getMessage(),
+                500
             );
         }
     }

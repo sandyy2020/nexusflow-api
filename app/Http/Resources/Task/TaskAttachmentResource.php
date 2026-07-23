@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Task;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -23,8 +24,16 @@ class TaskAttachmentResource extends JsonResource
             'file_path' => $this->file_path,
 
             'file_url' => $this->file_path
-                ? Storage::url($this->file_path)
+                ? asset(Storage::url($this->file_path))
                 : null,
+
+            'extension' => $this->file_name
+                ? strtolower(pathinfo($this->file_name, PATHINFO_EXTENSION))
+                : null,
+
+            'download_name' => $this->file_name,
+
+            'is_image' => str_starts_with($this->mime_type ?? '', 'image/'),
 
             'mime_type' => $this->mime_type,
 
@@ -60,7 +69,7 @@ class TaskAttachmentResource extends JsonResource
 
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
-        $power = floor(log($bytes, 1024));
+        $power = (int) floor(log($bytes, 1024));
 
         return number_format(
             $bytes / pow(1024, $power),

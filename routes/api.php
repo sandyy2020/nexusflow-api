@@ -15,8 +15,12 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\Task\TaskAssignmentController as TaskTaskAssignmentController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\TaskAttachmentController;
+use App\Http\Controllers\Api\TaskCommentController;
+use App\Http\Controllers\Api\TaskAssignmentController;
+use App\Http\Controllers\Api\TaskPriorityController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -29,11 +33,11 @@ use App\Http\Controllers\Api\TaskAttachmentController;
 
 // });
 
-Route::get('/test-user', function () {
-    $user = User::first();
+// Route::get('/test-user', function () {
+//     $user = User::first();
 
-    return new UserResource($user);
-});
+//     return new UserResource($user);
+// });
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -195,77 +199,139 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResource('tasks', TaskController::class);
 
-Route::patch(
-    'tasks/{task}/status',
-    [TaskController::class, 'changeStatus']
-);
+    Route::patch(
+        'tasks/{task}/status',
+        [TaskController::class, 'changeStatus']
+    );
 
-Route::patch(
-    'tasks/{id}/restore',
-    [TaskController::class, 'restore']
-);
+    Route::patch(
+        'tasks/{id}/restore',
+        [TaskController::class, 'restore']
+    );
 
-Route::delete(
-    'tasks/{id}/force-delete',
-    [TaskController::class, 'forceDelete']
-);
+    Route::delete(
+        'tasks/{id}/force-delete',
+        [TaskController::class, 'forceDelete']
+    );
 
-Route::post(
-    'tasks/{task}/assign-users',
-    [TaskController::class, 'assignUsers']
-);
+    Route::post(
+        'tasks/{task}/assign-users',
+        [TaskController::class, 'assignUsers']
+    );
 
-Route::delete(
-    'tasks/{task}/assigned-users/{userId}',
-    [TaskController::class, 'removeAssignedUser']
-);
+    Route::delete(
+        'tasks/{task}/assigned-users/{userId}',
+        [TaskController::class, 'removeAssignedUser']
+    );
 
-Route::put(
-    'tasks/{task}/sync-assignments',
-    [TaskController::class, 'syncAssignments']
-);
+    Route::put(
+        'tasks/{task}/sync-assignments',
+        [TaskController::class, 'syncAssignments']
+    );
 
-Route::patch(
-    'tasks/{task}/workflow-status',
-    [TaskController::class, 'changeTaskStatus']
-);
+    Route::patch(
+        'tasks/{task}/workflow-status',
+        [TaskController::class, 'changeTaskStatus']
+    );
 
-Route::patch(
-    'tasks/{task}/priority',
-    [TaskController::class, 'changeTaskPriority']
-);
+    Route::patch(
+        'tasks/{task}/priority',
+        [TaskController::class, 'changeTaskPriority']
+    );
 
-Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
 
-    Route::prefix('task-attachments')
-        ->controller(TaskAttachmentController::class)
-        ->group(function () {
+        Route::prefix('task-attachments')
+            ->controller(TaskAttachmentController::class)
+            ->group(function () {
 
-            Route::get('/', 'index')
-                ->middleware('permission:view task attachments');
+                Route::get('/', 'index')
+                    ->middleware('permission:view task attachments');
 
-            Route::post('/', 'store')
-                ->middleware('permission:create task attachments');
+                Route::post('/', 'store')
+                    ->middleware('permission:create task attachments');
 
-            Route::get('/{taskAttachment}', 'show')
-                ->middleware('permission:view task attachments');
+                Route::get('/{taskAttachment}', 'show')
+                    ->middleware('permission:view task attachments');
 
-            Route::put('/{taskAttachment}', 'update')
-                ->middleware('permission:edit task attachments');
+                Route::put('/{taskAttachment}', 'update')
+                    ->middleware('permission:edit task attachments');
 
-            Route::delete('/{taskAttachment}', 'destroy')
-                ->middleware('permission:delete task attachments');
+                Route::delete('/{taskAttachment}', 'destroy')
+                    ->middleware('permission:delete task attachments');
 
-            Route::patch('/{taskAttachment}/status', 'changeStatus')
-                ->middleware('permission:edit task attachments');
+                Route::patch('/{taskAttachment}/status', 'changeStatus')
+                    ->middleware('permission:edit task attachments');
 
-            Route::patch('/restore/{id}', 'restore')
-                ->middleware('permission:restore task attachments');
+                Route::patch('/restore/{id}', 'restore')
+                    ->middleware('permission:restore task attachments');
 
-            Route::delete('/force-delete/{id}', 'forceDelete')
-                ->middleware('permission:force delete task attachments');
+                Route::delete('/force-delete/{id}', 'forceDelete')
+                    ->middleware('permission:force delete task attachments');
+            });
 
+        Route::prefix('task-comments')
+            ->controller(TaskCommentController::class)
+            ->group(function () {
+
+                Route::get('/', 'index')
+                    ->middleware('permission:view task comments');
+
+                Route::post('/', 'store')
+                    ->middleware('permission:create task comments');
+
+                Route::get('/{taskComment}', 'show')
+                    ->middleware('permission:view task comments');
+
+                Route::put('/{taskComment}', 'update')
+                    ->middleware('permission:edit task comments');
+
+                Route::delete('/{taskComment}', 'destroy')
+                    ->middleware('permission:delete task comments');
+
+                Route::patch('/{taskComment}/status', 'changeStatus')
+                    ->middleware('permission:edit task comments');
+
+                Route::patch('/{taskComment}/pin', 'togglePin')
+                    ->middleware('permission:edit task comments');
+
+                Route::patch('/restore/{id}', 'restore')
+                    ->middleware('permission:restore task comments');
+
+                Route::delete('/force-delete/{id}', 'forceDelete')
+                    ->middleware('permission:force delete task comments');
+            });
+
+        Route::prefix('tasks')->group(function () {
+
+            Route::get(
+                '/{task}/assignments',
+                [TaskAssignmentController::class, 'index']
+            );
+
+            Route::post(
+                '/{task}/assignments',
+                [TaskAssignmentController::class, 'store']
+            );
+
+            Route::put(
+                '/{task}/assignments/sync',
+                [TaskAssignmentController::class, 'sync']
+            );
+
+            Route::delete(
+                '/{task}/assignments/{user}',
+                [TaskAssignmentController::class, 'remove']
+            );
         });
+    });
+    
+    // Task Priority Management
+    Route::middleware('permission:view task priorities')->group(function () {
 
-});
+        Route::get(
+            '/task-priorities',
+            [TaskPriorityController::class, 'index']
+        );
+    });
 });

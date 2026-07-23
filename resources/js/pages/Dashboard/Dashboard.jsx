@@ -12,23 +12,37 @@ import {
     FaUserShield,
     FaKey,
     FaBuilding,
+    FaProjectDiagram,
+    FaTasks,
+    FaComments,
+    FaPaperclip,
+    FaLayerGroup,
+    FaCheckCircle,
+    FaClock,
 } from "react-icons/fa";
 
 export default function Dashboard() {
-    const [stats, setStats] = useState({
-        users: 0,
-        roles: 0,
-        permissions: 0,
-        departments: 0,
-    });
-
     const [loading, setLoading] = useState(true);
-    const [latestUsers, setLatestUsers] = useState([]);
-    const [departmentStats, setDepartmentStats] = useState([]);
-    const [roleStats, setRoleStats] = useState([]);
-    const [growthStats, setGrowthStats] = useState([]);
-    const [recentActivities, setRecentActivities] = useState([]);
 
+    const [dashboard, setDashboard] = useState({
+        summary: {},
+        latest_users: [],
+        recent_users: [],
+        recent_roles: [],
+        recent_projects: [],
+        recent_tasks: [],
+        recent_comments: [],
+        recent_attachments: [],
+        department_stats: [],
+        role_stats: [],
+        project_stats: {},
+        task_stats: {},
+        task_status_chart: [],
+        task_priority_chart: [],
+        monthly_tasks: [],
+        growth_stats: [],
+        recent_activity: [],
+    });
     useEffect(() => {
         fetchDashboard();
     }, []);
@@ -36,19 +50,33 @@ export default function Dashboard() {
     const fetchDashboard = async () => {
         try {
             const response = await dashboardService.getDashboard();
-            const data = response.data.data;
-            setStats(data.summary);
-            setLatestUsers(data.latest_users);
-            setDepartmentStats(data.department_stats);
-            setRoleStats(data.role_stats);
-            setGrowthStats(data.growth_stats);
-            setRecentActivities(data.recent_activity);
+
+            setDashboard(response.data.data);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
+    const {
+        summary,
+        latest_users,
+        recent_users,
+        recent_roles,
+        recent_projects,
+        recent_tasks,
+        recent_comments,
+        recent_attachments,
+        department_stats,
+        role_stats,
+        project_stats,
+        task_stats,
+        task_status_chart,
+        task_priority_chart,
+        monthly_tasks,
+        growth_stats,
+        recent_activity,
+    } = dashboard;
 
     return (
         <AdminLayout>
@@ -57,62 +85,112 @@ export default function Dashboard() {
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <Card
                         title="Users"
-                        value={stats.users}
+                        value={summary.users}
                         icon={<FaUsers size={28} />}
                         color="bg-blue-600"
                     />
 
                     <Card
                         title="Active Users"
-                        value={stats.active_users}
+                        value={summary.active_users}
                         icon={<FaUserCheck size={28} />}
                         color="bg-green-600"
                     />
 
                     <Card
                         title="Inactive Users"
-                        value={stats.inactive_users}
+                        value={summary.inactive_users}
                         icon={<FaUserTimes size={28} />}
                         color="bg-red-600"
                     />
 
                     <Card
                         title="Roles"
-                        value={stats.roles}
+                        value={summary.roles}
                         icon={<FaUserShield size={28} />}
                         color="bg-purple-600"
                     />
 
                     <Card
                         title="Permissions"
-                        value={stats.permissions}
+                        value={summary.permissions}
                         icon={<FaKey size={28} />}
                         color="bg-yellow-500"
                     />
 
                     <Card
                         title="Departments"
-                        value={stats.departments}
+                        value={summary.departments}
                         icon={<FaBuilding size={28} />}
                         color="bg-cyan-600"
                     />
+
+                    <Card
+                        title="Teams"
+                        value={summary.teams}
+                        icon={<FaLayerGroup size={28} />}
+                        color="bg-indigo-600"
+                    />
+
+                    <Card
+                        title="Projects"
+                        value={summary.projects}
+                        icon={<FaProjectDiagram size={28} />}
+                        color="bg-pink-600"
+                    />
+
+                    <Card
+                        title="Tasks"
+                        value={summary.tasks}
+                        icon={<FaTasks size={28} />}
+                        color="bg-orange-600"
+                    />
+
+                    <Card
+                        title="Completed Tasks"
+                        value={summary.completed_tasks}
+                        icon={<FaCheckCircle size={28} />}
+                        color="bg-green-700"
+                    />
+
+                    <Card
+                        title="Pending Tasks"
+                        value={summary.pending_tasks}
+                        icon={<FaClock size={28} />}
+                        color="bg-red-500"
+                    />
+
+                    <Card
+                        title="Comments"
+                        value={summary.task_comments}
+                        icon={<FaComments size={28} />}
+                        color="bg-teal-600"
+                    />
+
+                    <Card
+                        title="Attachments"
+                        value={summary.task_attachments}
+                        icon={<FaPaperclip size={28} />}
+                        color="bg-gray-700"
+                    />
+
                     <Card
                         title="New Users"
-                        value={stats.new_users_month}
+                        value={summary.new_users_month}
                         icon={<FaUsers size={28} />}
-                        color="bg-pink-600"
+                        color="bg-fuchsia-600"
                     />
                 </div>
             )}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-8">
-                <DepartmentChart data={departmentStats} />
-                <RoleChart data={roleStats} />
+                <DepartmentChart data={department_stats} />
+                <RoleChart data={role_stats} />
             </div>
             <div className="mt-8">
-                <GrowthChart data={growthStats} />
+                <GrowthChart data={growth_stats} />
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-8">
@@ -128,7 +206,7 @@ export default function Dashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {latestUsers.map((user) => (
+                            {latest_users.map((user) => (
                                 <tr
                                     key={user.id}
                                     className="border-b hover:bg-gray-50"
@@ -170,7 +248,7 @@ export default function Dashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {departmentStats.map((department) => (
+                            {department_stats.map((department) => (
                                 <tr
                                     key={department.id}
                                     className="border-b hover:bg-gray-50"
@@ -213,7 +291,7 @@ export default function Dashboard() {
                     </thead>
 
                     <tbody>
-                        {roleStats.map((role) => (
+                        {role_stats.map((role) => (
                             <tr
                                 key={role.id}
                                 className="border-b hover:bg-gray-50"
@@ -229,7 +307,7 @@ export default function Dashboard() {
                 </table>
             </div>
             <div className="mt-8">
-                <RecentActivity activities={recentActivities} />
+                <RecentActivity activities={recent_activity} />
             </div>
         </AdminLayout>
     );
